@@ -1,6 +1,5 @@
-import requests
+import requests, re, os, ipaddress, random, uuid
 from bs4 import BeautifulSoup
-import re, os, ipaddress, random, uuid
 from datetime import datetime, timedelta
 myID = uuid
 
@@ -8,13 +7,13 @@ myID = uuid
 sources = {
     'https://api.uouin.com/cloudflare.html': 'Uouin',
     'https://ip.164746.xyz': 'ZXW',
-    'https://raw.githubusercontent.com/ymyuuu/IPDB/main/BestCF/bestcfv4.txt': 'IPDB',
-    'https://www.wetest.vip/page/cloudflare/address_v6.html': 'WetestV6',
-    'https://hhhhh.eu.org/030101-bestcf.txt': 'bCF',
-    'https://hhhhh.eu.org/CloudFlareYes.txt': 'CFYes',
-    'https://hhhhh.eu.org/haogege.txt': 'HaoGG',
-    'https://hhhhh.eu.org/vps789.txt': 'VPS',
-    'https://hhhhh.eu.org/wetest-cloudflare-v4.txt': 'WeTest'
+    'https://ipdb.030101.xyz/bestcfv4': 'IPDB',
+    'https://www.wetest.vip/page/cloudflare/address_v6.html': 'WeTestV6',
+    'https://ipdb.030101.xyz/bestcfv6': 'IPDBv6',
+    'https://stock.hostmonit.com/CloudFlareYes': 'CFYes',
+    'https://ip.haogege.xyz': 'HaoGG',
+    'https://raw.githubusercontent.com/crow1874/CF-DNS-Clone/refs/heads/main/vps789.txt': 'VPS',
+    'https://www.wetest.vip/page/cloudflare/address_v4.html': 'WeTest'
 }
 
 PORT = '443'  # 目标端口号
@@ -72,7 +71,7 @@ for url, shortname in sources.items():
                 ip_obj = ipaddress.ip_address(ip)
                 if ip_obj.version == 6:
                     ip_with_port = f"[{ip_obj.compressed}]:{PORT}"
-                    comment = f"IPv6-{shortname}-{myID.uuid4().hex[27:]}{str(random.randint(0,10))}"
+                    comment = f"{shortname}-{myID.uuid4().hex[27:]}{str(random.randint(0,10))}"
                     ipv6_dict[ip_with_port] = comment
             except ValueError:
                 continue
@@ -84,13 +83,13 @@ for url, shortname in sources.items():
 
 # 写入 ipv4.txt（仅IPv4）
 with open('ipv4.txt', 'w') as f4:
-    f4.write(f"0.0.0.0:000#Updated{now_str}\n")
+    f4.write(f"0.0.0.0:000#Updated{timestamp}\n")
     for ip in sorted(ipv4_dict):
         f4.write(f"{ip}#{ipv4_dict[ip]}\n")
 
 # 写入 ipv6.txt（仅IPv6）
 with open('ipv6.txt', 'w') as f6:
-    f6.write(f"0.0.0.0:000#Updated{now_str}\n")
+    f6.write(f"0.0.0.0:000#Updated{timestamp}\n")
     for ip in sorted(ipv6_dict):
         f6.write(f"{ip}#{ipv6_dict[ip]}\n")
 
